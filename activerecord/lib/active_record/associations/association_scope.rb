@@ -135,13 +135,15 @@ module ActiveRecord
               scope = next_chain_scope(scope, table, reflection, foreign_table, next_reflection)
             end
 
-            # Exclude the scope of the association itself, because that
-            # was already merged in the #scope method.
             reflection.constraints.each do |scope_chain_item|
               item = eval_scope(reflection.klass, table, scope_chain_item, owner)
 
               if scope_chain_item == refl.scope
                 scope.merge! item.except(:where, :includes)
+
+                # Exclude the scope of the association itself, because that
+                # was already merged in the #scope method.
+                next
               end
 
               reflection.all_includes do
